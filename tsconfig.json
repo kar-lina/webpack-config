@@ -10,7 +10,11 @@
     "allowSyntheticDefaultImports": true, // позволяет импортировать по дефолту (import React from 'react') даже если какая-то библиотека не имеет его
     // вместо (import * as React from 'react')
     "esModuleInterop": true, // этот флаг позволяет работать с пакетами, которые используют common js как с обычными пакетами с помощью import
-    "removeComments": true
+    "removeComments": true,
+    "paths": { // чтобы работали алиасы в ts
+      "@/*": ["./src/*"],
+    },
+    "baseUrl": "."
   },
   "ts-node": {
     "compilerOptions": {

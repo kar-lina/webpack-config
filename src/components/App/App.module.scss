@@ -1,9 +1,13 @@
-* {
-  box-sizing: border-box;
-}
-button {
+// * {
+//   box-sizing: border-box;
+// }
+.button {
   background-color: rgb(184, 224, 239);
   padding: 12px 16px 12px 16px;
   border-radius: 10px;
   text-align: center;  
+}
+
+.value {
+  font-size: 56px;
 }

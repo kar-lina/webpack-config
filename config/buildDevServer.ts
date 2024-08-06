@@ -9,5 +9,7 @@ export function buildDevServer(options: BuildOptions): DevServerConfiguration {
     },
     compress: true,
     port: options.port ?? 9000,
+    // если раздавать статику через nginx то надо делать проксирование на index.html
+    historyApiFallback: true,
   };
 }

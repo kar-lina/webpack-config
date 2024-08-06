@@ -2,6 +2,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { Configuration, ProgressPlugin } from 'webpack';
 import { BuildOptions } from './types/types';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
   const isDev = options.mode === 'development';
@@ -22,6 +23,7 @@ export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
         chunkFilename: 'css/[name].[contenthash:8].css',
       })
     ); //выносит css в отдельный файл
+    if(options.analyzer) plugins.push(new BundleAnalyzerPlugin)
   }
 
   return plugins;
