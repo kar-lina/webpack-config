@@ -1,8 +1,10 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { Configuration, ProgressPlugin } from 'webpack';
+import { Configuration, DefinePlugin, ProgressPlugin } from 'webpack';
 import { BuildOptions } from './types/types';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import  ForkTsCheckerWebpackPlugin  from 'fork-ts-checker-webpack-plugin';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
   const isDev = options.mode === 'development';
@@ -10,10 +12,17 @@ export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
 
   const plugins: Configuration['plugins'] = [
     new HtmlWebpackPlugin({ template: options.paths.html }), // плагин для работы с html, обязательно создаем новый экземляр класса плагина. Если не указвать template, создаться дефолтный html файл
+    new DefinePlugin({
+      __PLATFORM__: JSON.stringify(options.platform), // переменная platform переданная при запуске скрипта будет доступна в приложении как __PLATFORM__
+    }),
+    
   ];
 
   if (isDev) {
     plugins.push(new ProgressPlugin()); // показывает процесс сборки
+    plugins.push(new ForkTsCheckerWebpackPlugin()); // выносит проверку типов в отдельный процесс
+    plugins.push(new ReactRefreshWebpackPlugin()); // для hmr
+
   }
 
   if (isProd) {
@@ -23,7 +32,7 @@ export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
         chunkFilename: 'css/[name].[contenthash:8].css',
       })
     ); //выносит css в отдельный файл
-    if(options.analyzer) plugins.push(new BundleAnalyzerPlugin)
+    if (options.analyzer) plugins.push(new BundleAnalyzerPlugin());
   }
 
   return plugins;
