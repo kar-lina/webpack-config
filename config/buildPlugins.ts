@@ -3,15 +3,17 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { Configuration, DefinePlugin, ProgressPlugin } from 'webpack';
 import { BuildOptions } from './types/types';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import CopyPlugin  from 'copy-webpack-plugin';
 import  ForkTsCheckerWebpackPlugin  from 'fork-ts-checker-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import path from 'path';
 
 export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
   const isDev = options.mode === 'development';
   const isProd = options.mode === 'production';
 
   const plugins: Configuration['plugins'] = [
-    new HtmlWebpackPlugin({ template: options.paths.html }), // плагин для работы с html, обязательно создаем новый экземляр класса плагина. Если не указвать template, создаться дефолтный html файл
+    new HtmlWebpackPlugin({ template: options.paths.html, favicon: path.resolve(options.paths.public, 'favicon.png') }), // плагин для работы с html, обязательно создаем новый экземляр класса плагина. Если не указвать template, создаться дефолтный html файл
     new DefinePlugin({
       __PLATFORM__: JSON.stringify(options.platform), // переменная platform переданная при запуске скрипта будет доступна в приложении как __PLATFORM__
     }),
@@ -33,6 +35,12 @@ export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
       })
     ); //выносит css в отдельный файл
     if (options.analyzer) plugins.push(new BundleAnalyzerPlugin());
+    plugins.push(
+      new CopyPlugin({
+        // копирует файлы
+        patterns: [{ from: path.resolve(options.paths.public, 'locales'), to: path.resolve(options.paths.output, 'locales') }],
+      })
+    );
   }
 
   return plugins;

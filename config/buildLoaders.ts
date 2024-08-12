@@ -83,6 +83,19 @@ export function buildLoaders(options: BuildOptions): ModuleOptions['rules'] {
     },
     exclude: /node_modules/,
   };
+
+  // Современный компилятор для js/ts/tsx файлов, который позволяет использовать самые современные методы во всех браузерах не переживая об их поддержке
+  // Более гибкая настройка чем у ts loader. Но для поддержки всех доп расширений необходима установка доп пресетов
+  const babelLoader = {
+    test: /\.tsx?$/, // обработка только ts / tsx файлов
+    exclude: /node_modules/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env', '@babel/preset-typescript', ['@babel/preset-react', { runtime: isDev? 'automatic' : 'classic' }]],
+      },
+    },
+  };
   
 
   return [
@@ -92,6 +105,7 @@ export function buildLoaders(options: BuildOptions): ModuleOptions['rules'] {
     scssLoader,
     //styleLoader, // style loader можно убрать, так как правила обрпботки css уже прописаны выше для sass файлов
     tsLoader,
+    babelLoader,
     svgLoader,
   ];
 }
